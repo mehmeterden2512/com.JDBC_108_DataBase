@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testsuite errors="0" failures="0" name="io.cucumber.core.plugin.JUnitFormatter" skipped="0" tests="1" time="1.748">
-    <testcase classname="JDBC uzerinden Database baglantisi kurularak ilk test" name="Users tablosundan isimler testi." time="1.621">
-        <system-out>
-            <![CDATA[Given Database ile iletisimi baslat.........................................passed
-Then Query statement araciligi ile database gonderilir......................passed
-Then Databaseden donen resultset verisi test edilir.........................passed
-And Database kapatilir......................................................passed
+<testsuite errors="0" failures="1" name="io.cucumber.core.plugin.JUnitFormatter" skipped="0" tests="1" time="1.765">
+    <testcase classname="JDBC baglantisi uzerinden update sorgusu yapma" name="_2" time="1.584">
+        <failure message="You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '= 'Yozgat' WHERE id=1' at line 1" type="java.sql.SQLSyntaxErrorException">
+            <![CDATA[* Database baglantisi kurulur...............................................passed
+* "1" degeri verilen customerin "Yozgat" güncellenir........................failed
+* customer address tablosundaki "address" bilgileri listelenir..............skipped
+* customerin "Yozgat" guncellendigi dogrulanir..............................skipped
+* Database baglantisi kapatilir.............................................skipped
+
+StackTrace:
+java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '= 'Yozgat' WHERE id=1' at line 1
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.StatementImpl.executeUpdateInternal(StatementImpl.java:1334)
+	at com.mysql.cj.jdbc.StatementImpl.executeLargeUpdate(StatementImpl.java:2084)
+	at com.mysql.cj.jdbc.StatementImpl.executeUpdate(StatementImpl.java:1245)
+	at utilities.DBUtils.update(DBUtils.java:232)
+	at stepdefinitions.Stepdefinition.degeri_verilen_customerin_güncellenir(Stepdefinition.java:129)
+	at ✽."1" degeri verilen customerin "Yozgat" güncellenir.(file:///C:/Users/LENOVO/IdeaProjects/com.JDBC_108/./src/test/Resources/JDBC03_updataQuery.feature:9)
 ]]>
-        </system-out>
+        </failure>
     </testcase>
 </testsuite>

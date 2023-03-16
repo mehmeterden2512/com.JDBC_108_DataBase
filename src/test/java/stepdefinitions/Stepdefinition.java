@@ -5,8 +5,12 @@ import io.cucumber.java.en.Then;
 import org.junit.Assert;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static utilities.DBUtils.*;
 
 public class Stepdefinition {
     //JDBC (DB) testi yapılmaya baslamadan once sistem yoneticisi ile gorusulup Database
@@ -29,6 +33,9 @@ public class Stepdefinition {
     Connection connection;
     Statement statement;
     ResultSet resultSet;
+    List<Object> staffId=new ArrayList<>();
+    List<Object> adressList=new ArrayList<>();
+
     @Given("Database ile iletisimi baslat")
     public void database_ile_iletisimi_baslat() throws SQLException {
        connection= DriverManager.getConnection(url,username,password);
@@ -73,10 +80,84 @@ public class Stepdefinition {
 
         resultSet.absolute(11);
         System.out.println(resultSet.getString("email"));
+        System.out.println(resultSet.getString("phone"));
+        System.out.println(resultSet.getString("username"));
     }
     @Then("Database kapatilir")
     public void database_kapatilir() throws SQLException {
         connection.close();
     }
+    //==========================================================================
+
+    @Given("Database baglantisi kurulur")
+    public void database_baglantisi_kurulur() {
+       createConnection();
+    }
+    @Given("Staff tablosundaki {string} leri listelenir")
+    public void staff_tablosundaki_leri_listelenir(String id) {
+        String query="SELECT * FROM u480337000_tlb_training.staff";
+        staffId=getColumnData("SELECT * FROM u480337000_tlb_training.staff",id);
+        System.out.println(staffId);
+
+
+    }
+    @Given("Verilen {string} dogrulanir.")
+    public void verilen_dogrulanir(String verilenId) {
+        /*for (int i = 0; i <staffId.size() ; i++) {
+            assertTrue(staffId.get(i).toString().equals(verilenId));
+        }
+        bak buna duzenleme bak
+         */
+      assertTrue(staffId.toString().contains(verilenId));
+    }
+    @Given("Database baglantisi kapatilir")
+    public void database_baglantisi_kapatilir() {
+        closeConnection();
+    }
+
+    //=====================================================================
+    @Given("{string} degeri verilen customerin {string} güncellenir.")
+    public void degeri_verilen_customerin_güncellenir(String id, String adres) throws SQLException {
+        String query= "UPDATE u480337000_tlb_training.customer_addresses" +
+                "SET address= '"+adres+"' WHERE id="+id;
+              /*
+              UPDATE u480337000_tlb_training.customer_addresses
+                SET address= 'kadiköy' WHERE id=1
+               */
+        System.out.println(query);
+
+        update(query);
+
+    }
+    @Given("customer address tablosundaki {string} bilgileri listelenir")
+    public void customer_address_tablosundaki_bilgileri_listelenir(String columnName) {
+        String query="SELECT * FROM u480337000_tlb_training.customer_addresses;";
+
+      adressList=  getColumnData(query,columnName);
+        System.out.println(adressList);
+    }
+    @Given("customerin {string} guncellendigi dogrulanir.")
+    public void customerin_guncellendigi_dogrulanir(String guncellenenAdress) {
+        assertTrue(adressList.toString().contains(guncellenenAdress));
+    }
+
+    @Given("Verilen datalar ile query hazirlanip sorgu gerceklestirilir")
+    public void verilen_datalar_ile_query_hazirlanip_sorgu_gerceklestirilir() throws SQLException {
+        String query="select email from u480337000_tlb_training.users where first_name ='admin' and last_name='user';";
+        resultSet=getStatement().executeQuery(query);
+    }
+    @Given("Donen Result set datasi dogrulanir")
+    public void donen_result_set_datasi_dogrulanir() throws SQLException {
+            resultSet.first();
+
+            String actualEmailData=resultSet.getString("email");
+        System.out.println("beklenen  :"+resultSet.getString("email"));
+            String expectedEmailData="admin@gmail.com";
+            assertEquals(expectedEmailData,actualEmailData);
+
+    }
+
+
+
 
 }
